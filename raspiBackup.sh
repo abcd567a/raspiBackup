@@ -34,10 +34,10 @@ if [ ! -n "$BASH" ] ;then
 	exit 127
 fi
 
-VERSION="0.6.5-hotfix"												# -beta, -hotfix or -dev suffixes possible
-VERSION_SCRIPT_CONFIG="0.1.4"										# required config version for script
+VERSION="0.6.5.2-dev"											# -beta, -hotfix or -dev suffixes possible
+VERSION_SCRIPT_CONFIG="0.1.4"									# required config version for script
 
-VERSION_VARNAME="VERSION"											# has to match above var names
+VERSION_VARNAME="VERSION"										# has to match above var names
 VERSION_CONFIG_VARNAME="VERSION_.*CONF.*"						# used to lookup VERSION_CONFIG in config files
 
 # add pathes if not already set (usually not set in crontab)
@@ -61,11 +61,11 @@ IS_HOTFIX=$(( ! $(grep -iq hotfix <<< "$VERSION"; echo $?) ))
 MYSELF=${0##*/}
 MYNAME=${MYSELF%.*}
 
-GIT_DATE="$Date: 2020-05-15 18:36:42 +0200$"
+GIT_DATE="$Date: 2020-06-03 19:21:29 +0200$"
 GIT_DATE_ONLY=${GIT_DATE/: /}
 GIT_DATE_ONLY=$(cut -f 2 -d ' ' <<< $GIT_DATE)
 GIT_TIME_ONLY=$(cut -f 3 -d ' ' <<< $GIT_DATE)
-GIT_COMMIT="$Sha1: 0c927f6$"
+GIT_COMMIT="$Sha1: a8b81b3$"
 GIT_COMMIT_ONLY=$(cut -f 2 -d ' ' <<< $GIT_COMMIT | sed 's/\$//')
 
 GIT_CODEVERSION="$MYSELF $VERSION, $GIT_DATE_ONLY/$GIT_TIME_ONLY - $GIT_COMMIT_ONLY"
@@ -556,8 +556,8 @@ MSG_RESTORE_OK=76
 MSG_EN[$MSG_RESTORE_OK]="RBK0076I: Restore finished successfully."
 MSG_DE[$MSG_RESTORE_OK]="RBK0076I: Restore erfolgreich beendet."
 MSG_RESTORE_FAILED=77
-MSG_EN[$MSG_RESTORE_FAILED]="RBK0077E: Restore failed with RC %s. Check previous error messages."
-MSG_DE[$MSG_RESTORE_FAILED]="RBK0077E: Restore wurde fehlerhaft mit RC %s beendet. Siehe vorhergehende Fehlermeldungen."
+MSG_EN[$MSG_RESTORE_FAILED]="RBK0077E: Restore failed. Check previous error messages."
+MSG_DE[$MSG_RESTORE_FAILED]="RBK0077E: Restore wurde fehlerhaft beendet. Siehe vorhergehende Fehlermeldungen."
 MSG_BACKUP_TIME=78
 MSG_EN[$MSG_BACKUP_TIME]="RBK0078I: Backup time: %s:%s:%s."
 MSG_DE[$MSG_BACKUP_TIME]="RBK0078I: Backupzeit: %s:%s:%s."
@@ -583,8 +583,8 @@ MSG_BACKUP_STARTED=85
 MSG_EN[$MSG_BACKUP_STARTED]="RBK0085I: Backup of type %s started. Please be patient."
 MSG_DE[$MSG_BACKUP_STARTED]="RBK0085I: Backuperstellung vom Typ %s gestartet. Bitte Geduld."
 MSG_RESTOREDEVICE_IS_PARTITION=86
-MSG_EN[$MSG_RESTOREDEVICE_IS_PARTITION]="RBK0086E: Restore device cannot be a partition."
-MSG_DE[$MSG_RESTOREDEVICE_IS_PARTITION]="RBK0086E: Wiederherstellungsgerät darf keine Partition sein."
+MSG_EN[$MSG_RESTOREDEVICE_IS_PARTITION]="RBK0086E: Restore device has trailing partition number but cannot be a partition."
+MSG_DE[$MSG_RESTOREDEVICE_IS_PARTITION]="RBK0086E: Wiederherstellungsgerät hat eine Partitionsnummer am Ende aber darf keine Partition sein."
 MSG_RESTORE_DIRECTORY_INVALID=87
 MSG_EN[$MSG_RESTORE_DIRECTORY_INVALID]="RBK0087E: Restore directory %s was not created by $MYNAME."
 MSG_DE[$MSG_RESTORE_DIRECTORY_INVALID]="RBK0087E: Wiederherstellungsverzeichnis %s wurde nicht von $MYNAME erstellt."
@@ -1011,9 +1011,9 @@ MSG_DE[$MSG_UMOUNT_CHECK_ERROR]="RBK0223E: Umount von %s an %s ist fehlerhaft."
 MSG_FILE_CONTAINS_SPACES=224
 MSG_EN[$MSG_FILE_CONTAINS_SPACES]="RBK0224E: Spaces are not allowed in \"%s\"."
 MSG_DE[$MSG_FILE_CONTAINS_SPACES]="RBK0224E: Leerzeichen sind nicht in \"%s\" erlaubt."
-MSG_INVALID_EMAIL=225
-MSG_EN[$MSG_INVALID_EMAIL]="RBK0225E: Invalid eMail \"%s\"."
-MSG_DE[$MSG_INVALID_EMAIL]="RBK0225E: Ungültige eMail \"%s\"."
+#MSG_INVALID_EMAIL=225
+#MSG_EN[$MSG_INVALID_EMAIL]="RBK0225E: Invalid eMail \"%s\"."
+#MSG_DE[$MSG_INVALID_EMAIL]="RBK0225E: Ungültige eMail \"%s\"."
 MSG_CONFIG_VERSION_DOES_NOT_MATCH=226
 MSG_EN[$MSG_CONFIG_VERSION_DOES_NOT_MATCH]="RBK0226W: Found unexpected config version %s in %s. Expected version %s."
 MSG_DE[$MSG_CONFIG_VERSION_DOES_NOT_MATCH]="RBK0226W: Unerwartete Konfigurationsversion %s in %s gefunden. %s wird erwartet."
@@ -1095,6 +1095,18 @@ MSG_DE[$MSG_CHMOD_FAILED]="RBK0251E: chmod von %1 nicht möglich."
 MSG_EMAIL_COLORING_NOT_SUPPORTED=252
 MSG_EN[$MSG_EMAIL_COLORING_NOT_SUPPORTED]="RBK0252E: Invalid eMail coloring %s. Using $EMAIL_COLORING_SUBJECT. Supported are %s."
 MSG_DE[$MSG_EMAIL_COLORING_NOT_SUPPORTED]="RBK0252E: Ungültige eMailKolorierung %s. Benutze $EMAIL_COLORING_SUBJECT. Unterstützt sind %s."
+MSG_SD_TOO_SMALL=253
+MSG_EN[$MSG_SD_TOO_SMALL]="RBK0253E: Target device %s too small. Available bytes: %s. Required bytes: %s."
+MSG_DE[$MSG_SD_TOO_SMALL]="RBK0253E: Zielgerät %s ist zu klein. Verfügbare Bytes: %s. Erforderliche Bytes: %s."
+MSG_SENSITIVE_SEPARATOR=254
+MSG_EN[$MSG_SENSITIVE_SEPARATOR]="+================================================================================================================================================+"
+MSG_DE[$MSG_SENSITIVE_SEPARATOR]="+================================================================================================================================================+"
+MSG_SENSITIVE_WARNING=255
+MSG_EN[$MSG_SENSITIVE_WARNING]="| ===> A lot of sensitive information is masqueraded in this log file. Nevertheless please check the log carefully before you distribute it <=== |"
+MSG_DE[$MSG_SENSITIVE_WARNING]="| ===>  Viele sensitive Informationen werden in dieser Logdatei maskiert. Vor dem Verteilen des Logs sollte es trotzdem ueberprueft werden  <=== |"
+MSG_RESTORE_WARNING=256
+MSG_EN[$MSG_RESTORE_WARNING]="RBK0256W: Restore finished with warnings. Check previous warning messages for details."
+MSG_DE[$MSG_RESTORE_WARNING]="RBK0256W: Restore endete mit Warnungen. Siehe vorhergehende Warnmeldungen."
 
 declare -A MSG_HEADER=( ['I']="---" ['W']="!!!" ['E']="???" )
 
@@ -2704,11 +2716,11 @@ function setupEnvironment() {
 		fi
 	fi
 
-	logItem "+================================================================================================================================================+"
-	logItem "| ===> A lot of sensitive information is masqueraded in this log file. Nevertheless please check the log carefully before you distribute it <=== |"
-	logItem "+================================================================================================================================================+"
-	logItem "| ===>  Viele sensitive Informationen werden in dieser Logdatei maskiert. Vor dem Verteilen des Logs sollte es trotzdem ueberprueft werden  <=== |"
-	logItem "+================================================================================================================================================+"
+	local sep="$(getLocalizedMessage $MSG_SENSITIVE_SEPARATOR)"
+	local warn="$(getLocalizedMessage $MSG_SENSITIVE_WARNING)"
+	logItem "$sep"
+	logItem "$warn"
+	logItem "$sep"
 
 	logItem "LOG_OUTPUT: $LOG_OUTPUT"
 	logItem "Using logfile $LOG_FILE"
@@ -3003,7 +3015,7 @@ function sendEMail() { # content subject
 				EMAIL_COLORING="$EMAIL_COLORING_SUBJECT"
 			else
 				if [[ "$EMAIL_COLORING" == "$EMAIL_COLORING_SUBJECT" ]]; then
-					contentType="${NL}MIME-Version: 1.0${NL}Content-Type: text/html; charset=utf-8"
+					contentType="${NL}Content-Type: text/html"
 				elif [[ "$EMAIL_COLORING" == "$EMAIL_COLORING_OPTION" ]]; then
 					coloringOption=(-a "Content-Type: text/html")
 				else
@@ -3202,7 +3214,15 @@ function masqueradeSensitiveInfoInLog() {
 		sed -i -E "s/$EMAIL/${m}/g" $LOG_FILE
 	fi
 
-	# email parms usually also contain eMails
+	# sender email
+
+	if [[ -n "$SENDER_EMAIL" ]]; then
+		logItem "Masquerading sender eMail"
+		m="$(masquerade "$SENDER_EMAIL")"
+		sed -i -E "s/$SENDER_EMAIL/${m}/g" $LOG_FILE
+	fi
+
+	# email parms usually also contain eMails and passwords
 
 	if [[ -n "$EMAIL_PARMS" ]]; then
 		logItem "Masquerading eMail parameters"
@@ -3240,7 +3260,7 @@ function masqueradeSensitiveInfoInLog() {
 
 	# any non local IPs used somewhere (mounts et al)
 
-	logItem "Masquerading non local IPs"
+	logItem "Masquerading sensitive non local IPs"
 	masqueradeNonlocalIPs $LOG_FILE
 
 	# now delete console color annotation ESC sequences
@@ -3251,33 +3271,39 @@ function masqueradeSensitiveInfoInLog() {
 
 }
 
-function masqueradeNonlocalIPs() { # file
+function masqueradeNonlocalIPs() {
 
-	if which perl &>/dev/null; then
+	local masq=1
+	local f=mktemp
 
-		perl -pi -ne '
-			my $IP_ADDRESS = qr /(([\d]{1,3}\.){3}[\d]{1,3})/;
-			my $line;
+	while (( $masq )); do
 
-			$line=$_;
-			while ($line =~ /($IP_ADDRESS)/g ) {
-				my $ip = $1;
+		masq=0
+		cp $1 $f
 
-				if ( $1 !~ /^192\.167\./
-					&& $1 !~ /^127\./
-					&& $1 !~ /0\.0\.0\.0/
-					&& $1 !~ /255\.{1,3}(255)?/
-					&& $1 !~ /^169\./
-					&& $1 !~ /^10\./
-					&& $1 !~ /^172\.([1][6-9]|2[1-9]|3[0-1])/ ) {
-						my $privateIp = $ip;
-						$privateIp =~ s/\d+\.\d+/%%%.%%%/;
-						s/$ip/$privateIp/;
-				}
-			 }
+		while read line; do
+				if [[ $line =~ ([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}) ]]; then
+					local n1=${BASH_REMATCH[1]}
+					local n2=${BASH_REMATCH[2]}
+					local n3=${BASH_REMATCH[3]}
+					local n4=${BASH_REMATCH[4]}
 
-		' "$1" 2>/dev/null
-	fi
+					local ip="$n1.$n2.$n3.$n4"
+					local masquip="%%%.%%%.$n3.$n4"
+
+					(( $n1 == 192 && $n2 == 168 )) \
+						|| (( $n1 == 10 )) \
+						|| (( $n1 == 127 )) \
+						|| (( $n1 == 0 )) \
+						|| (( $n1 == 255 )) \
+						|| ( (( $n1 == 172 )) && [[ $line =~ 172\.(1[6-9]|2[1-9]|3[0-1]) ]] ) && continue
+
+					sed -i "s/$ip/$masquip/g" "$1"
+					masq=1
+				fi
+		done < $f
+	done
+	rm $f
 }
 
 function cleanup() { # trap
@@ -3319,12 +3345,21 @@ function cleanup() { # trap
 
 		if (( ! $MAIL_ON_ERROR_ONLY )); then
 			if (( $WARNING_MESSAGE_WRITTEN )); then
-				writeToConsole $MSG_LEVEL_MINIMAL $MSG_BACKUP_WARNING
+				if (( $RESTORE )); then
+					writeToConsole $MSG_LEVEL_MINIMAL $MSG_RESTORE_WARNING
+				else
+					writeToConsole $MSG_LEVEL_MINIMAL $MSG_BACKUP_WARNING
+				fi
 			fi
 		fi
 
 		if (( $rc != $RC_CTRLC )); then
-			writeToConsole $MSG_LEVEL_MINIMAL $MSG_BACKUP_FAILED
+			if (( $RESTORE )); then
+				writeToConsole $MSG_LEVEL_MINIMAL $MSG_RESTORE_FAILED
+			else
+				writeToConsole $MSG_LEVEL_MINIMAL $MSG_BACKUP_FAILED
+			fi
+
 			if (( $rc != $RC_EMAILPROG_ERROR )); then
 				msgTitle=$(getLocalizedMessage $MSG_TITLE_ERROR $HOSTNAME)
 				sendEMail "$msg" "$msgTitle"
@@ -3341,7 +3376,11 @@ function cleanup() { # trap
 
 	else 	# success
 
-		writeToConsole $MSG_LEVEL_MINIMAL $MSG_BACKUP_OK
+		if (( $RESTORE )); then
+			writeToConsole $MSG_LEVEL_MINIMAL $MSG_RESTORE_OK
+		else
+			writeToConsole $MSG_LEVEL_MINIMAL $MSG_BACKUP_OK
+		fi
 
 		if [[ -n "$TELEGRAM_TOKEN"  ]]; then
 			msg=$(getLocalizedMessage $MSG_TITLE_OK $HOSTNAME)
@@ -3390,12 +3429,6 @@ function cleanupRestore() { # trap
 	if (( ! $PARTITIONBASED_BACKUP )); then
 		umount $BOOT_PARTITION &>>"$LOG_FILE"
 		umount $ROOT_PARTITION &>>"$LOG_FILE"
-	fi
-
-	if (( rc != 0 )); then
-		writeToConsole $MSG_LEVEL_MINIMAL $MSG_RESTORE_FAILED $rc
-	else
-		writeToConsole $MSG_LEVEL_MINIMAL $MSG_RESTORE_OK
 	fi
 
 	logExit "$rc"
@@ -4161,6 +4194,8 @@ function areDevicesUnique() {
 
 	local uuid uuidsub partuuid
 
+	logCommand "blkid -o udev"
+
 	while read line; do
 
 		if grep -q ID_FS_UUID= <<< "$line"; then
@@ -4181,11 +4216,13 @@ function areDevicesUnique() {
 		fi
 
 		if [[ -z "$line" ]]; then								# groups are separated by empty lines thus one group parsed now
-			if [[ ${UUID[$uuid]}+abc != "+abc" ]]; then
-				logItem "UUID $uuid is not unique"
-				unique=1
-			else
-				UUID[$uuid]=1
+			if [[ -n $uuid ]]; then
+				if [[ ${UUID[$uuid]}+abc != "+abc" ]]; then
+					logItem "UUID $uuid is not unique"
+					unique=1
+				else
+					UUID[$uuid]=1
+				fi
 			fi
 			uuid=""
 			uuidsub=""
@@ -5049,10 +5086,6 @@ function commonChecks() {
 	logEntry
 
 	if [[ -n "$EMAIL" ]]; then
-		if ! [[ "$EMAIL" =~ ^[a-zA-Z0-9_.+-]+\@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$ ]]; then
-			writeToConsole $MSG_LEVEL_MINIMAL $MSG_INVALID_EMAIL "$EMAIL"
-			exitError $RC_PARAMETER_ERROR
-		fi
 		if [[ ! $EMAIL_PROGRAM =~ $SUPPORTED_EMAIL_PROGRAM_REGEX ]]; then
 			writeToConsole $MSG_LEVEL_MINIMAL $MSG_EMAIL_PROG_NOT_SUPPORTED "$EMAIL_PROGRAM" "$SUPPORTED_MAIL_PROGRAMS"
 			exitError $RC_EMAILPROG_ERROR
@@ -5061,7 +5094,7 @@ function commonChecks() {
 			writeToConsole $MSG_LEVEL_MINIMAL $MSG_MAILPROGRAM_NOT_INSTALLED $EMAIL_PROGRAM
 			exitError $RC_EMAILPROG_ERROR
 		fi
-		if [[ (( "$EMAIL_PROGRAM" == $EMAIL_SSMTP_PROGRAM || "$EMAIL_PROGRAM" == $EMAIL_MSMTP_PROGRAM )) && (( $APPEND_LOG )) ]]; then
+		if [[ "$EMAIL_PROGRAM" == "$EMAIL_SSMTP_PROGRAM" || "$EMAIL_PROGRAM" == "$EMAIL_MSMTP_PROGRAM" ]] && (( $APPEND_LOG )); then
 			if ! which mpack &>/dev/null; then
 				writeToConsole $MSG_LEVEL_MINIMAL $MSG_MPACK_NOT_INSTALLED
 				APPEND_LOG=0
@@ -6307,6 +6340,7 @@ function doitRestore() {
 	fi
 
 	if ! (( $FAKE )); then
+		RESTORE_DEVICE=${RESTORE_DEVICE%/} # delete trailing /
 		if [[ ! ( $RESTORE_DEVICE =~ ^/dev/mmcblk[0-9]$ ) && ! ( $RESTORE_DEVICE =~ "/dev/loop" ) ]]; then
 			if ! [[ "$RESTORE_DEVICE" =~ ^/dev/[a-zA-Z]+$ ]] ; then
 				writeToConsole $MSG_LEVEL_MINIMAL $MSG_RESTOREDEVICE_IS_PARTITION
@@ -6364,6 +6398,23 @@ function doitRestore() {
 		writeToConsole $MSG_LEVEL_MINIMAL $MSG_SKIP_SFDISK "$RESTORE_DEVICE"
 	fi
 
+	if [[ "$BACKUPTYPE" == "$BACKUPTYPE_DD" ]]; then
+		local sdSize="$(fdisk -l "$RESTORE_DEVICE" | grep "Disk.*${RESTORE_DEVICE}" | cut -d ' ' -f 5)"
+		local imgSize="$(stat -c "%s" "$ROOT_RESTOREFILE")"
+		if [[ $sdSize < $imgSize ]]; then
+			writeToConsole $MSG_LEVEL_MINIMAL $MSG_SD_TOO_SMALL "$RESTORE_DEVICE" "$sdSize" "$imgSize"
+			exitError $RC_RESTORE_FAILED
+		fi
+	elif [[ "$BACKUPTYPE" == "$BACKUPTYPE_DDZ" ]]; then
+		local c
+		read c sdSize r < <(gzip -l "$RESTOREFILE" | tail -n 1)
+		imgSize="$(stat -c "%s" "$ROOT_RESTOREFILE")"
+		if [[ $sdSize < $imgSize ]]; then
+			writeToConsole $MSG_LEVEL_MINIMAL $MSG_SD_TOO_SMALL "$RESTORE_DEVICE" "$sdSize" "$imgSize"
+			exitError $RC_RESTORE_FAILED
+		fi
+	fi
+
 	# adjust partition for tar and rsync backup in normal mode
 
 	if (( ! $PARTITIONBASED_BACKUP )) && [[ $BACKUPTYPE != $BACKUPTYPE_DD && $BACKUPTYPE != $BACKUPTYPE_DDZ ]] && (( ! $ROOT_PARTITION_DEFINED )); then
@@ -6379,7 +6430,7 @@ function doitRestore() {
 						writeToConsole $MSG_LEVEL_MINIMAL $MSG_ADJUSTING_WARNING "$RESTORE_DEVICE" "$(bytesToHuman $targetSDSize)" "$(bytesToHuman $sourceSDSize)"
 					else
 						writeToConsole $MSG_LEVEL_MINIMAL $MSG_ADJUSTING_DISABLED "$RESTORE_DEVICE" "$(bytesToHuman $targetSDSize)" "$(bytesToHuman $sourceSDSize)"
-						exitError RC_PARAMETER_ERROR
+						exitError $RC_PARAMETER_ERROR
 					fi
 				else
 					if (( $RESIZE_ROOTFS )); then
@@ -6980,7 +7031,6 @@ function usageEN() {
 	echo "Usage: $MYSELF [option]* {backupDirectory}"
 	echo ""
 	echo "-General options-"
-	echo "-A append logfile to eMail (default: ${NO_YES[$DEFAULT_APPEND_LOG]})"
 	[ -z "$DEFAULT_EMAIL" ] && DEFAULT_EMAIL="no"
 	echo "-b {dd block size} (default: $DEFAULT_DD_BLOCKSIZE)"
 	[ -z "$DEFAULT_DD_PARMS" ] && DEFAULT_DD_PARMS="no"
@@ -7031,7 +7081,6 @@ function usageDE() {
 	echo "Aufruf: $MYSELF [Option]* {Backupverzeichnis}"
 	echo ""
 	echo "-Allgemeine Optionen-"
-	echo "-A Logfile wird in eMail angehängt (Standard: ${NO_YES[$DEFAULT_APPEND_LOG]})"
 	[ -z "$DEFAULT_EMAIL" ] && DEFAULT_EMAIL="nein"
 	echo "-b {dd Blockgröße} (Standard: $DEFAULT_DD_BLOCKSIZE)"
 	[ -z "$DEFAULT_DD_PARMS" ] && DEFAULT_DD_PARMS="nein"
