@@ -61,11 +61,11 @@ IS_HOTFIX=$(( ! $(grep -iq hotfix <<< "$VERSION"; echo $?) ))
 MYSELF=${0##*/}
 MYNAME=${MYSELF%.*}
 
-GIT_DATE="$Date: 2020-06-03 19:21:29 +0200$"
+GIT_DATE="$Date: 2020-06-05 15:14:00 +0200$"
 GIT_DATE_ONLY=${GIT_DATE/: /}
 GIT_DATE_ONLY=$(cut -f 2 -d ' ' <<< $GIT_DATE)
 GIT_TIME_ONLY=$(cut -f 3 -d ' ' <<< $GIT_DATE)
-GIT_COMMIT="$Sha1: a8b81b3$"
+GIT_COMMIT="$Sha1: 350a607$"
 GIT_COMMIT_ONLY=$(cut -f 2 -d ' ' <<< $GIT_COMMIT | sed 's/\$//')
 
 GIT_CODEVERSION="$MYSELF $VERSION, $GIT_DATE_ONLY/$GIT_TIME_ONLY - $GIT_COMMIT_ONLY"
@@ -3015,9 +3015,9 @@ function sendEMail() { # content subject
 				EMAIL_COLORING="$EMAIL_COLORING_SUBJECT"
 			else
 				if [[ "$EMAIL_COLORING" == "$EMAIL_COLORING_SUBJECT" ]]; then
-					contentType="${NL}Content-Type: text/html"
+					contentType="${NL}MIME-Version: 1.0${NL}Content-Type: text/html; charset=utf-8"
 				elif [[ "$EMAIL_COLORING" == "$EMAIL_COLORING_OPTION" ]]; then
-					coloringOption=(-a "Content-Type: text/html")
+					coloringOption='-a "Content-Type: text/html"'
 				else
 					assertionFailed $LINENO "Unexpected email coloring $EMAIL_COLORING"
 				fi
@@ -3055,7 +3055,7 @@ function sendEMail() { # content subject
 			case $EMAIL_PROGRAM in
 				$EMAIL_MAILX_PROGRAM)
 					logItem "$EMAIL_PROGRAM" "${coloringOption[@]}" $EMAIL_PARMS -s "\"$subject\"" $attach $EMAIL <<< "\"$content\""
-					"$EMAIL_PROGRAM" "${coloringOption[@]}" $EMAIL_PARMS -s "$subject" $attach "$EMAIL" <<< "$content"
+					"$EMAIL_PROGRAM" ${coloringOption[@]} $EMAIL_PARMS -s "$subject" $attach "$EMAIL" <<< "$content"
 					rc=$?
 					logItem "$EMAIL_PROGRAM: RC: $rc"
 					;;
@@ -3346,7 +3346,7 @@ function cleanup() { # trap
 		if (( ! $MAIL_ON_ERROR_ONLY )); then
 			if (( $WARNING_MESSAGE_WRITTEN )); then
 				if (( $RESTORE )); then
-					writeToConsole $MSG_LEVEL_MINIMAL $MSG_RESTORE_WARNING
+					writeToConsole $MSG_LEVEL_MINIMAL $MSG_RESTORE_WARNING	
 				else
 					writeToConsole $MSG_LEVEL_MINIMAL $MSG_BACKUP_WARNING
 				fi
@@ -3359,7 +3359,7 @@ function cleanup() { # trap
 			else
 				writeToConsole $MSG_LEVEL_MINIMAL $MSG_BACKUP_FAILED
 			fi
-
+			
 			if (( $rc != $RC_EMAILPROG_ERROR )); then
 				msgTitle=$(getLocalizedMessage $MSG_TITLE_ERROR $HOSTNAME)
 				sendEMail "$msg" "$msgTitle"
